@@ -113,29 +113,34 @@ end
 end
 
 # 4. Symlink
-%w(neo4j neo4j-shell).each do |f|
-  link "/usr/local/bin/#{f}" do
-    owner node.neo4j.server.user
-    group node.neo4j.server.user
-    to    "#{node.neo4j.server.installation_dir}/bin/#{f}"
-  end
+service_name = node.neo4j.server.service_name
+link "/usr/local/bin/#{service_name}" do
+  owner node.neo4j.server.user
+  group node.neo4j.server.user
+  to    "#{node.neo4j.server.installation_dir}/bin/neo4j"
+end
+
+link "/usr/local/bin/#{service_name}-shell" do
+  owner node.neo4j.server.user
+  group node.neo4j.server.user
+  to    "#{node.neo4j.server.installation_dir}/bin/neo4j-shell"
 end
 
 # 5. init.d Service
-template "/etc/init.d/neo4j" do
-  source "neo4j.init.erb"
+template "/etc/init.d/#{service_name}" do
+  source 'neo4j.init.erb'
   owner 'root'
   mode  0755
 end
 
-service "neo4j" do
+service service_name do
   supports :start => true, :stop => true, :restart => true
   if node.neo4j.server.enabled
     action :enable
   else
     action :disable
   end
-  subscribes :restart, 'template[/etc/init.d/neo4j]'
+  subscribes :restart, "template[/etc/init.d/#{service_name}]"
 end
 
 # 6. Install config files

@@ -11,6 +11,8 @@ default[:neo4j][:server][:user]              = 'neo4j'
 
 default[:neo4j][:server][:name]              = 'neo4j-server'
 
+default[:neo4j][:server][:service_name]      = 'neo4j'
+
 default[:neo4j][:server][:installation_dir]  = "/usr/local/#{node[:neo4j][:server][:name]}"
 default[:neo4j][:server][:run_dir]           = '/var/run'
 default[:neo4j][:server][:lib_dir]           = "/var/lib/#{node[:neo4j][:server][:name]}"
